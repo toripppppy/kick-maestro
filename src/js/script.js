@@ -199,13 +199,14 @@ function makeQuestion() {
 
   // 直近5題の重複を防ぐ
   const maxMemory = 5;
+  const key = `${new_question["name"]}_${new_question["drop"]}`;
 
-  if (questionMemory.includes([new_question["name"],new_question["drop"]])) {
+  if (questionMemory.includes(key)) {
     // 再帰
     return makeQuestion();
   }
   // 直近5題を記憶
-  questionMemory.push([new_question["name"],new_question["drop"]])
+  questionMemory.push(key)
   if (questionMemory.length > maxMemory) {
     questionMemory.shift()
   }
