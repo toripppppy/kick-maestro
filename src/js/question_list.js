@@ -121,4 +121,24 @@ export const QUESTION_LIST = [
     "drop": [75, 105, 175],
     "url": "src/assets/audio/BCM - BassHouse.mp3"
   },
+  {
+    "name": "Headhunterz & Vertile ft. Sian Evans - Lost Without You",
+    "drop": [117, 229],
+    "url": "src/assets/audio/Headhunterz & Vertile ft. Sian Evans - Lost Without You (Defqon.1 2023 Closing Theme).mp3"
+  },
+  {
+    "name": "Sefa - 1527",
+    "drop": [136, 146],
+    "url": "src/assets/audio/Sefa - 1527 (Official Video).mp3"
+  },
+  {
+    "name": "Headhunterz & Vertile - Before I Wake",
+    "drop": [44, 57, 69],
+    "url": "src/assets/audio/Headhunterz & Vertile - Before I Wake (Official Videoclip).mp3"
+  },
+  {
+    "name": "DJ Mad Dog - Reset",
+    "drop": [19, 28, 33, 52, 62, 136, 146, 156, 165],
+    "url": "src/assets/audio/DJ Mad Dog - Reset.mp3"
+  },
 ]
