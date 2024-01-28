@@ -135,7 +135,7 @@ const oneMore = () => {
   }
   else if (state === "checkingAnswer") {
     pause();
-    setTimeout(showAnswer, 1000);
+    showAnswer();
   }
 }
 
