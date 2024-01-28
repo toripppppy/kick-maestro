@@ -141,4 +141,9 @@ export const QUESTION_LIST = [
     "drop": [19, 28, 33, 52, 62, 136, 146, 156, 165],
     "url": "src/assets/audio/DJ Mad Dog - Reset.mp3"
   },
+  {
+    "name": "The Purge & Adjuzt ft. RXBY  - Summer Secrets",
+    "drop": [71, 89, 155, 167],
+    "url": "src/assets/audio/The Purge & Adjuzt ft. RXBY  - Summer Secrets  Q-dance Records.mp3"
+  },
 ]
