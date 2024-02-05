@@ -146,4 +146,9 @@ export const QUESTION_LIST = [
     "drop": [71, 89, 155, 167],
     "url": "src/assets/audio/The Purge & Adjuzt ft. RXBY  - Summer Secrets  Q-dance Records.mp3"
   },
+  {
+    "name": "MINUS MILITIA - GAS D'R OP",
+    "drop": [21, 61, 102],
+    "url": "src/assets/audio/MINUS MILITIA - GAS D'R OP (Official Video).mp3"
+  },
 ]
