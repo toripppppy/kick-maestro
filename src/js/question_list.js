@@ -161,4 +161,9 @@ export const QUESTION_LIST = [
     "drop": [144],
     "url": "src/assets/audio/Atmozfears - The Soul.mp3"
   },
+  {
+    "name": "Killshot - Monster",
+    "drop": [58, 73, 155, 167, 182],
+    "url": "src/assets/audio/Killshot - Monster.mp3"
+  },
 ]
