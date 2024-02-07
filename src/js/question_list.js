@@ -156,4 +156,9 @@ export const QUESTION_LIST = [
     "drop": [47, 59, 195, 205],
     "url": "src/assets/audio/The Prophet - Wanna Play？ (Official Videoclip).mp3"
   },
+  {
+    "name": "Atmozfears - The Soul",
+    "drop": [144],
+    "url": "src/assets/audio/Atmozfears - The Soul.mp3"
+  },
 ]
