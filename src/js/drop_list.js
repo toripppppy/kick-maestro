@@ -1,4 +1,4 @@
-import { QUESTION_LIST } from "../js/question_list.js";
+import { QUESTION_LIST } from "./question_list.js";
 
 const container = document.getElementById("container");
 
@@ -6,8 +6,9 @@ function redirectToDrop(e) {
   // ドロップを登録
   localStorage.setItem("dropName", e.target.dataset.name)
   localStorage.setItem("dropTime", e.target.dataset.drop)
-  localStorage.setItem("isDropSpecified", true)
+  
   // リダイレクト
+  localStorage.setItem("isRedirected", true)
   window.location.href = "../index.html";
 }
 

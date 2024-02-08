@@ -129,7 +129,7 @@ const goToNextQuestion = () => {
 }
 
 const redirectToQuestions = () => {
-  window.location.href = "pages/questions.html";
+  window.location.href = "pages/drop_list.html";
 }
 
 const oneMore = () => {
@@ -184,13 +184,16 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// リダイレクトしてきたかどうかを確認
-redirected = (localStorage.getItem("isDropSpecified") === "true")
-if (redirected) {
-  localStorage.setItem("isDropSpecified", false)
-}
-
-init();
+window.addEventListener('DOMContentLoaded', function() {
+  // リダイレクトしてきたかどうかを確認
+  redirected = (localStorage.getItem("isRedirected") === "true")
+  if (redirected) {
+    localStorage.removeItem("isRedirected")
+    console.log("isRedirected")
+  }
+  // 初期化
+  init();
+});
 
 function countdown(count, callback) {
   let i = count;
@@ -277,9 +280,9 @@ function init() {
     onclick()
   } else {
     setQuestion(makeQuestion());
+    // タイトルコール
+    setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns()}パターン収録）`);
   }
-  // タイトルコール
-  setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns()}パターン収録）`);
 }
 
 function setQuestion(new_question) {

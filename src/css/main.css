@@ -4,7 +4,11 @@ body {
 	font-family: sans-serif;
 }
 
-h1 {
+.header {
+	margin: 30px;
+}
+
+#display {
   margin-top: 150px;
   text-align: center;
 }
