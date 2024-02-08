@@ -12,6 +12,7 @@ let state = "first";
 let question = null;
 let questionMemory = [];
 let canClick = true;
+let redirected = false;
 
 const wavesurfer = WaveSurfer.create({
   container: '#waveform',
@@ -127,6 +128,10 @@ const goToNextQuestion = () => {
   setButtonText("待ち遠しいです");
 }
 
+const redirectToQuestions = () => {
+  window.location.href = "pages/drop_list.html";
+}
+
 const oneMore = () => {
   if (state === "answered") {
     setHidden(onemore, true);
@@ -159,6 +164,11 @@ const onclick = () => {
     showAnswer();
   }
   else if (state === "checkingAnswer") {
+    if (redirected) {
+      // questionに戻る
+      redirectToQuestions();
+      return
+    }
     state = "waitForQuestion"
     goToNextQuestion();
   }
@@ -174,7 +184,16 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-init();
+window.addEventListener('DOMContentLoaded', function() {
+  // リダイレクトしてきたかどうかを確認
+  redirected = (localStorage.getItem("isRedirected") === "true")
+  if (redirected) {
+    localStorage.removeItem("isRedirected")
+    console.log("isRedirected")
+  }
+  // 初期化
+  init();
+});
 
 function countdown(count, callback) {
   let i = count;
@@ -230,14 +249,40 @@ function sumOfPatterns() {
   return QUESTION_LIST.reduce((sum, q) => sum + q["drop"].length, 0);
 }
 
+function getURLByName(name) {
+  for (const q of QUESTION_LIST) {
+    if (q.name === name) {
+      return q.url
+    }
+  }
+}
+
 function init() {
   // もろもろの非表示
   setHidden(waveform, true);
   setHidden(onemore, true);
+
   // 問題を作成し設定
-  setQuestion(makeQuestion());
-  // タイトルコール
-  setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns()}パターン収録）`);
+  if (redirected) {
+    // リダイレクトしてきた
+    const dropName = localStorage.getItem("dropName");
+    const dropTime = localStorage.getItem("dropTime");
+  
+    const new_question = {
+      "name": dropName,
+      "drop": Number(dropTime),
+      "url": getURLByName(dropName),
+    }
+  
+    setQuestion(new_question);
+    // カウントダウンまでスキップ
+    state = "waitForQuestion"
+    onclick()
+  } else {
+    setQuestion(makeQuestion());
+    // タイトルコール
+    setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns()}パターン収録）`);
+  }
 }
 
 function setQuestion(new_question) {
