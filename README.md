@@ -1,7 +1,10 @@
 # kick-maestro
 曲のキックだけで曲を当てる新感覚早押しイントロクイズ！<br>
 以下のリンクから遊べます！<br>
-[https://toripppppy.github.io/kick-maestro/](https://toripppppy.github.io/kick-maestro/)
+https://toripppppy.github.io/kick-maestro/
+
+全曲全出題パターンを網羅した問題一覧「キック道場」はこちら！<br>
+https://toripppppy.github.io/kick-maestro/pages/drop_list.html
 
 # 遊び方
 遊び方はカンタン！水色のボタンを押すだけです。<br>
