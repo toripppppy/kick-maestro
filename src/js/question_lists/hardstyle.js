@@ -30,7 +30,7 @@
 リロードしてゲームをお楽しみください。
 */ 
 
-export const QUESTION_LIST = [
+export const HARDSTYLE_QUESTION_LIST = [
   {
     "name": "TOZA & Stratisphere - WARZONE",
     "drop": [34, 52, 139, 153],
