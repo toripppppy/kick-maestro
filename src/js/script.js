@@ -271,11 +271,3 @@ function getSelectedList() {
     return TECHNO_QUESTION_LIST;
   };
 }
-
-function getSelectedList() {
-  if (genreSelector.value === "hardstyle") {
-    return HARDSTYLE_QUESTION_LIST;
-  } else if (genreSelector.value === "techno") {
-    return TECHNO_QUESTION_LIST;
-  };
-}
