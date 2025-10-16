@@ -177,6 +177,8 @@ const onclick = () => {
       return
     }
     state = "waitForQuestion"
+    // 問題を作成し設定
+    setQuestion(makeQuestion());
     goToNextQuestion();
   }
 }
