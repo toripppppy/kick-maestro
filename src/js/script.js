@@ -1,5 +1,4 @@
-import WaveSurfer from "https://unpkg.com/wavesurfer.js/dist/wavesurfer.esm.js"
-import RegionsPlugin from "https://unpkg.com/wavesurfer.js/dist/plugins/regions.esm.js"
+import { WaveViewer } from "./libs/waveViewer.js";
 
 import { QUESTION_LIST } from "./question_list.js";
 
@@ -8,33 +7,13 @@ const button = document.getElementById("button")
 const onemore = document.getElementById("onemore")
 const waveform = document.getElementById("waveform")
 
+const waveViewer = new WaveViewer();
+
 let state = "first";
 let question = null;
 let questionMemory = [];
 let canClick = true;
 let redirected = false;
-
-const wavesurfer = WaveSurfer.create({
-  container: '#waveform',
-  waveColor: 'rgb(200, 0, 200)',
-  progressColor: 'rgb(100, 0, 100)',
-  // 表示幅
-  minPxPerSec: 250,
-  // スクロールバーを非表示
-  hideScrollbar: true,
-  // 触れても何も起きない
-  interact: false,
-  // ノーマライズ
-  normalize: true,
-})
-
-const wsRegions = wavesurfer.registerPlugin(RegionsPlugin.create())
-
-// 音源の読み込み完了後に呼び出される
-wavesurfer.on('decode', () => {
-  // リージョン（マーカー）を全てクリアする
-  wsRegions.clearRegions()
-})
 
 // 表示非表示を設定する
 // target: element
@@ -49,24 +28,6 @@ const setHidden = (target, flag) => {
 // ボタンを押せるかどうか
 const setCanClick = (flag) => {
   canClick = flag;
-}
-
-/// WaveSurfer
-const setTime = (time) => {
-  wavesurfer.setTime(time)
-}
-
-const play = (time = null) => {
-  if (time !== null) {
-    setTime(time);
-  } else {
-    setTime(question["drop"])
-  }
-  wavesurfer.play()
-}
-
-const pause = () => {
-  wavesurfer.pause()
 }
 
 /// テキスト更新
@@ -95,13 +56,13 @@ const guessStart = () => {
   setCanClick(true);
   // 波形を表示
   setHidden(waveform, false);
-  play(question["drop"]);
+  waveViewer.play(question["drop"]);
   setDisplayText("答えよ");
   setButtonText("理解りました");
 }
 
 const answer = () => {
-  pause();
+  waveViewer.pause();
   setDisplayText("名は何という");
   setButtonText("答えを見る");
   // もう一回聞くボタンを表示
@@ -110,10 +71,9 @@ const answer = () => {
 
 const showAnswer = () => {
   // 出題開始地点にマーカーを設置
-  wsRegions.clearRegions()
-  setMarker("Question", question["drop"]);
+  waveViewer.placeMarker("Question", question["drop"]);
   // ドロップの５秒前から流して答え合わせ
-  play(question["drop"] - 5);
+  waveViewer.play(question["drop"] - 5);
   setDisplayText(`${question["name"]}`);
   setButtonText("当然です");
 }
@@ -122,7 +82,7 @@ const goToNextQuestion = () => {
   // もう一回聞くボタンを非表示
   setHidden(onemore, true);
   // 再生停止して初期化
-  pause();
+  waveViewer.pause();
   init();
   setDisplayText("準備はいいか");
   setButtonText("待ち遠しいです");
@@ -139,7 +99,7 @@ const oneMore = () => {
     waitForQuestion();
   }
   else if (state === "checkingAnswer") {
-    pause();
+    waveViewer.pause();
     showAnswer();
   }
 }
@@ -288,13 +248,5 @@ function init() {
 function setQuestion(new_question) {
   // 問題を作成し、wavesurferに登録する
   question = new_question;
-  wavesurfer.load(new_question["url"]);
-}
-
-function setMarker(text, time) {
-  wsRegions.addRegion({
-    start: time,
-    content: text,
-    color: "#cccccc",
-  })
+  waveViewer.load(question["url"]);
 }
