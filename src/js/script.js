@@ -1,7 +1,9 @@
 import { WaveViewer } from "./libs/waveViewer.js";
 
-import { QUESTION_LIST } from "./question_list.js";
+import { HARDSTYLE_QUESTION_LIST } from "./question_lists/hardstyle.js";
+import { TECHNO_QUESTION_LIST } from "./question_lists/techno.js";
 
+const genreSelector = document.getElementById("genre");
 const display = document.getElementById("display")
 const button = document.getElementById("button")
 const onemore = document.getElementById("onemore")
@@ -43,6 +45,11 @@ const setButtonText = (text) => {
 const introduction = () => {
   setDisplayText("始めようか");
   setButtonText("待ち遠しいです");
+
+  // 問題を作成し設定
+  setQuestion(makeQuestion());
+  // ジャンルセレクターを非表示
+  setHidden(genreSelector, true);
 }
 
 const waitForQuestion = () => {
@@ -130,6 +137,8 @@ const onclick = () => {
       return
     }
     state = "waitForQuestion"
+    // 問題を作成し設定
+    setQuestion(makeQuestion());
     goToNextQuestion();
   }
 }
@@ -172,6 +181,8 @@ function countdown(count, callback) {
 }
 
 function makeQuestion() {
+  const QUESTION_LIST = getSelectedList();
+
   // 出題リストからランダムな問題を取得
   const index = Math.floor(Math.random() * QUESTION_LIST.length);
   const new_question = QUESTION_LIST[index]
@@ -206,10 +217,12 @@ function makeQuestion() {
 
 // 登録されたdropの合計を返す
 function sumOfPatterns() {
+  const QUESTION_LIST = getSelectedList();
   return QUESTION_LIST.reduce((sum, q) => sum + q["drop"].length, 0);
 }
 
 function getURLByName(name) {
+  const QUESTION_LIST = getSelectedList();
   for (const q of QUESTION_LIST) {
     if (q.name === name) {
       return q.url
@@ -239,9 +252,9 @@ function init() {
     state = "waitForQuestion"
     onclick()
   } else {
-    setQuestion(makeQuestion());
     // タイトルコール
-    setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns()}パターン収録）`);
+    const QUESTION_LIST = getSelectedList();
+    setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns(QUESTION_LIST)}パターン収録）`);
   }
 }
 
@@ -249,4 +262,20 @@ function setQuestion(new_question) {
   // 問題を作成し、wavesurferに登録する
   question = new_question;
   waveViewer.load(question["url"]);
+}
+
+function getSelectedList() {
+  if (genreSelector.value === "hardstyle") {
+    return HARDSTYLE_QUESTION_LIST;
+  } else if (genreSelector.value === "techno") {
+    return TECHNO_QUESTION_LIST;
+  };
+}
+
+function getSelectedList() {
+  if (genreSelector.value === "hardstyle") {
+    return HARDSTYLE_QUESTION_LIST;
+  } else if (genreSelector.value === "techno") {
+    return TECHNO_QUESTION_LIST;
+  };
 }

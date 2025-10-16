@@ -1,4 +1,5 @@
-import { QUESTION_LIST } from "./question_list.js";
+import { HARDSTYLE_QUESTION_LIST } from "./question_lists/hardstyle.js";
+import { TECHNO_QUESTION_LIST } from "./question_lists/techno.js";
 
 const container = document.getElementById("container");
 
@@ -14,6 +15,7 @@ function redirectToDrop(e) {
 
 // 曲名・ドロップ一覧リストを作成
 const ul = document.createElement("ul");
+const QUESTION_LIST = HARDSTYLE_QUESTION_LIST.concat(TECHNO_QUESTION_LIST);
 QUESTION_LIST.forEach(item => {
   const li = document.createElement("li");
 
