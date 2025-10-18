@@ -1,4 +1,5 @@
 import { WaveViewer } from "./libs/waveViewer.js";
+import { Question, QuestionListController } from "./libs/question.js";
 
 import { HARDSTYLE_QUESTION_LIST } from "./question_lists/hardstyle.js";
 import { TECHNO_QUESTION_LIST } from "./question_lists/techno.js";
@@ -12,9 +13,10 @@ const waveform = document.getElementById("waveform")
 const waveViewer = new WaveViewer();
 
 let state = "first";
-let question = null;
+let question = new Question("", 0, "");
 let questionMemory = [];
 let redirected = false;
+let controller = null;
 
 // 表示非表示を設定する
 // target: element
@@ -41,7 +43,8 @@ const introduction = () => {
   setButtonText("待ち遠しいです");
 
   // 問題を作成し設定
-  setQuestion(makeQuestion());
+  controller = new QuestionListController(getSelectedList());
+  setQuestion(controller.makeQuestion(questionMemory));
   // ジャンルセレクターを非表示
   setHidden(genreSelector, true);
 }
@@ -57,7 +60,7 @@ const guessStart = () => {
   button.disabled = false;
   // 波形を表示
   setHidden(waveform, false);
-  waveViewer.play(question["drop"]);
+  waveViewer.play(question.dropTime);
   setDisplayText("答えよ");
   setButtonText("理解りました");
 }
@@ -71,35 +74,36 @@ const answer = () => {
 }
 
 const showAnswer = () => {
-  // 出題開始地点にマーカーを設置
-  waveViewer.placeMarker("Question", question["drop"]);
   // ドロップの５秒前から流して答え合わせ
-  waveViewer.play(question["drop"] - 5);
-  setDisplayText(`${question["name"]}`);
+  // 出題開始地点にマーカーを設置
+  waveViewer.placeMarker("Question", question.dropTime);
+  waveViewer.play(question.dropTime - 5);
+  setDisplayText(`${question.name}`);
   setButtonText("当然です");
 }
 
 const goToNextQuestion = () => {
-  // もう一回聞くボタンを非表示
-  setHidden(onemore, true);
-  // 再生停止して初期化
+  // 次の問題へ
   waveViewer.pause();
-  init();
+  setHidden(onemore, true);
+  setHidden(waveform, true);
   setDisplayText("準備はいいか");
   setButtonText("待ち遠しいです");
+  
+  // 問題を作成し設定
+  controller = new QuestionListController(getSelectedList());
+  setQuestion(controller.makeQuestion(questionMemory));
 }
 
-const redirectToQuestions = () => {
-  window.location.href = "pages/drop_list.html";
-}
-
-const oneMore = () => {
+onemore.onclick = () => {
   if (state === "answered") {
+    // 問題をもう一度聞く
     setHidden(onemore, true);
     state = "guessing";
     waitForQuestion();
   }
   else if (state === "checkingAnswer") {
+    // 答えをもう一度聞く
     waveViewer.pause();
     showAnswer();
   }
@@ -123,37 +127,42 @@ const onclick = () => {
     showAnswer();
   }
   else if (state === "checkingAnswer") {
+    // 問題終了
     if (redirected) {
-      // questionに戻る
-      redirectToQuestions();
-      return
+      // question_list に戻る
+      localStorage.removeItem("isRedirected")
+      window.location.href = "pages/drop_list.html";
+    } else {
+      // 次の問題へ
+      state = "waitForQuestion"
+      goToNextQuestion();
     }
-    state = "waitForQuestion"
-    // 問題を作成し設定
-    setQuestion(makeQuestion());
-    goToNextQuestion();
   }
 }
 
+// スペースキーもボタンとして使用可能
 button.onclick = onclick;
-onemore.onclick = oneMore;
-
 document.addEventListener('keydown', (e) => {
-  // スペースキーもボタンとして使用可能
-  if (e.code === "Space") {
+  if (e.code === "Space" && !button.disabled) {
     onclick();
   }
 });
 
 window.addEventListener('DOMContentLoaded', function() {
-  // リダイレクトしてきたかどうかを確認
-  redirected = (localStorage.getItem("isRedirected") === "true")
+  // 初回描画
+  setHidden(waveform, true);
+  setHidden(onemore, true);
+  redirected = (localStorage.getItem("isRedirected") === "true");
+
   if (redirected) {
-    localStorage.removeItem("isRedirected")
-    console.log("isRedirected")
+    // drop_listからリダイレクトされてきた場合
+    setHidden(genreSelector, true);
+    redirected_init();
+  } else {
+    // タイトルコール
+    const controller = new QuestionListController(HARDSTYLE_QUESTION_LIST.concat(TECHNO_QUESTION_LIST));
+    setDisplayText(`キックマエストロ（現在${controller.question_list.length}曲・${controller.sumOfPatterns()}パターン収録）`);
   }
-  // 初期化
-  init();
 });
 
 function countdown(count, callback) {
@@ -172,88 +181,27 @@ function countdown(count, callback) {
   }, 1000);
 }
 
-function makeQuestion() {
-  const QUESTION_LIST = getSelectedList();
+function redirected_init() {
+  const dropName = localStorage.getItem("dropName");
+  const dropTime = localStorage.getItem("dropTime");
+  const controller = new QuestionListController(HARDSTYLE_QUESTION_LIST.concat(TECHNO_QUESTION_LIST));
 
-  // 出題リストからランダムな問題を取得
-  const index = Math.floor(Math.random() * QUESTION_LIST.length);
-  const new_question = QUESTION_LIST[index]
+  const new_question = new Question(
+    dropName,
+    Number(dropTime),
+    controller.getURLByName(dropName),
+  )
 
-  // 直近5題の重複を防ぐ
-  const maxMemory = 5;
-  const key = `${new_question["name"]}_${new_question["drop"]}`;
-
-  if (questionMemory.includes(key)) {
-    // 再帰
-    return makeQuestion();
-  }
-  // 直近5題を記憶
-  questionMemory.push(key)
-  if (questionMemory.length > maxMemory) {
-    questionMemory.shift()
-  }
-
-  // debug
-  console.log(new_question)
-  
-  // ランダムなドロップを選択
-  const drop_index = Math.floor(Math.random() * new_question["drop"].length);
-
-  // 問題にフォーマットして返す
-  return {
-    "name": new_question["name"],
-    "drop": new_question["drop"][drop_index],
-    "url": new_question["url"],
-  }
-}
-
-// 登録されたdropの合計を返す
-function sumOfPatterns() {
-  const QUESTION_LIST = getSelectedList();
-  return QUESTION_LIST.reduce((sum, q) => sum + q["drop"].length, 0);
-}
-
-function getURLByName(name) {
-  const QUESTION_LIST = getSelectedList();
-  for (const q of QUESTION_LIST) {
-    if (q.name === name) {
-      return q.url
-    }
-  }
-}
-
-function init() {
-  // もろもろの非表示
-  setHidden(waveform, true);
-  setHidden(onemore, true);
-
-  // 問題を作成し設定
-  if (redirected) {
-    // リダイレクトしてきた
-    const dropName = localStorage.getItem("dropName");
-    const dropTime = localStorage.getItem("dropTime");
-  
-    const new_question = {
-      "name": dropName,
-      "drop": Number(dropTime),
-      "url": getURLByName(dropName),
-    }
-  
-    setQuestion(new_question);
-    // カウントダウンまでスキップ
-    state = "waitForQuestion"
-    onclick()
-  } else {
-    // タイトルコール
-    const QUESTION_LIST = getSelectedList();
-    setDisplayText(`キックマエストロ（現在${QUESTION_LIST.length}曲・${sumOfPatterns(QUESTION_LIST)}パターン収録）`);
-  }
+  setQuestion(new_question);
+  // カウントダウンまでスキップ
+  state = "waitForQuestion"
+  onclick()
 }
 
 function setQuestion(new_question) {
   // 問題を作成し、wavesurferに登録する
   question = new_question;
-  waveViewer.load(question["url"]);
+  waveViewer.load(question.url);
 }
 
 function getSelectedList() {
