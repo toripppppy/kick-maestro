@@ -14,7 +14,6 @@ const waveViewer = new WaveViewer();
 let state = "first";
 let question = null;
 let questionMemory = [];
-let canClick = true;
 let redirected = false;
 
 // 表示非表示を設定する
@@ -25,11 +24,6 @@ const setHidden = (target, flag) => {
   } else {
     target.style.visibility = "visible";
   }
-}
-
-// ボタンを押せるかどうか
-const setCanClick = (flag) => {
-  canClick = flag;
 }
 
 /// テキスト更新
@@ -54,13 +48,13 @@ const introduction = () => {
 
 const waitForQuestion = () => {
   // カウントダウン中はボタンは押せない
-  setCanClick(false);
+  button.disabled = true;
   setButtonText("来るぞ・・・");
   countdown(3, guessStart);
 }
 
 const guessStart = () => {
-  setCanClick(true);
+  button.disabled = false;
   // 波形を表示
   setHidden(waveform, false);
   waveViewer.play(question["drop"]);
@@ -112,8 +106,6 @@ const oneMore = () => {
 }
 
 const onclick = () => {
-  if (!canClick) return;
-  
   if (state === "first") {
     state = "waitForQuestion";
     introduction();

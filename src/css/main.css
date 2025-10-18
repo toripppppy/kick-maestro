@@ -42,23 +42,26 @@ select {
   margin: auto;
 }
 
-a.btn {
-	display: block;
-	text-align: center;
-	text-decoration: none;
-	width: 120px;
-	margin: auto;
-	padding: 3.5rem 4rem;
-	font-weight: bold;
-	border-radius: 100vh;
-	border-bottom: 7px solid #0686b2;
-	background: #27acd9;
-	color: #fff;
+button.btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  width: 240px;
+  height: 80px;
+  margin: auto;
+  font-weight: bold;
+  border-radius: 100vh;
+  border-bottom: 7px solid #0686b2;
+  background: #27acd9;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-a.btn:hover {
-	margin-top: 6px;
-	border-bottom: 1px solid #0686b2;
-	color: #fff;
+button.btn:hover {
+  margin-top: 6px;
+  border-bottom: 1px solid #0686b2;
+  color: #fff;
 }
 
 #onemore {
