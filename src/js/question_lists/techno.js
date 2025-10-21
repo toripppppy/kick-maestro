@@ -13,7 +13,7 @@
   - "コンポーザー名 - 曲名" の形式で入力してください。
   - 答えとして表示されるものです。
 
-  "drop": Array[Number]
+  "drops": Array[Number]
   - 出題する始点となる秒数を指定できます。キックが鳴り始める瞬間を指定してください。
   - 必ず秒数で計算して記載してください。（1m15sなら75, 3m38sなら218のように）
   - 値を複数指定すると、出題時にランダムで一つ選択され出題されます。
@@ -33,7 +33,7 @@
 export const TECHNO_QUESTION_LIST = [
   {
     "name": "TOZA & Stratisphere - WARZONE",
-    "drop": [34, 52, 139, 153],
+    "drops": [34, 52, 139, 153],
     "url": "src/assets/audio/hardstyle/WARZONE.mp3"
   },
 ]

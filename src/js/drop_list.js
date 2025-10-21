@@ -27,7 +27,7 @@ QUESTION_LIST.forEach(item => {
   // ドロップ一覧の作成
   const drops = document.createElement("div");
   drops.setAttribute("class", "drops");
-  item.drop.forEach(d => {
+  item.drops.forEach(d => {
     const drop = document.createElement("a")
     drop.text = `${d}`;
     // メタデータの登録
